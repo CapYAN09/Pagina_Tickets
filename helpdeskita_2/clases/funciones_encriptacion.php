@@ -1,28 +1,29 @@
 <?php 
-// Tus funciones de encriptación
-function getEncryptedPassword($password){
-    define('METHOD','AES-256-CBC');
-    define('SECRET_KEY','Tecnologico');
-    define('SECRET_IV','990520');
+// funciones_encriptacion.php - VERSIÓN CORREGIDA
 
-    $output=FALSE;
-    $key=hash('sha256', SECRET_KEY);
-    $iv=substr(hash('sha256', SECRET_IV), 0, 16);
-    $output=openssl_encrypt($password, METHOD, $key, 0, $iv);
-    
-    return base64_encode($output);
+// Prevenir redeclaración
+if (!function_exists('getEncryptedPassword')) {
+
+    // Definir constantes UNA sola vez
+    define('ENCRYPT_METHOD','AES-256-CBC');
+    define('ENCRYPT_SECRET_KEY','Tecnologico');
+    define('ENCRYPT_SECRET_IV','990520');
+
+    function getEncryptedPassword($password){
+        $output = FALSE;
+        $key = hash('sha256', ENCRYPT_SECRET_KEY);
+        $iv = substr(hash('sha256', ENCRYPT_SECRET_IV), 0, 16);
+        $output = openssl_encrypt($password, ENCRYPT_METHOD, $key, 0, $iv);
+        
+        return base64_encode($output);
+    }
+
+    function getUnencryptedPassword($encrypted){
+        $key = hash('sha256', ENCRYPT_SECRET_KEY);
+        $iv = substr(hash('sha256', ENCRYPT_SECRET_IV), 0, 16);
+        
+        return openssl_decrypt(base64_decode($encrypted), ENCRYPT_METHOD, $key, 0, $iv);
+    }
+
 }
-
-function getUnencryptedPassword($encrypted){
-    // Desencriptar la contraseña
-    define('METHOD','AES-256-CBC');
-    define('SECRET_KEY','Tecnologico');
-    define('SECRET_IV','990520');
-    
-    $key=hash('sha256', SECRET_KEY);
-    $iv=substr(hash('sha256', SECRET_IV), 0, 16);
-    
-    return openssl_decrypt(base64_decode($encrypted), METHOD, $key, 0, $iv);
-}
-
- ?> 
+?>

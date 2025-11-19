@@ -5,8 +5,10 @@ ini_set('display_errors', 1);
 // Log inicial
 error_log("🎯 === LOGINUSUARIOS.PHP EJECUTÁNDOSE ===");
 
-// Incluir archivos necesarios
+// Incluir archivos necesarios CON include_once
 $ruta_base = $_SERVER['DOCUMENT_ROOT'] . '/helpdeskita_2';
+
+// Usar include_once para prevenir redeclaraciones
 include_once $ruta_base . '/clases/funciones_encriptacion.php';
 include_once $ruta_base . '/clases/Usuarios.php';
 
@@ -14,20 +16,11 @@ session_start();
 
 // Depuración de datos POST recibidos
 error_log("📥 DATOS POST RECIBIDOS:");
-error_log("POST array: " . print_r($_POST, true));
-error_log("Content-Type: " . ($_SERVER['CONTENT_TYPE'] ?? 'No definido'));
-
 $usuario = $_POST['login'] ?? '';
 $password = $_POST['password'] ?? '';
 
-error_log("Usuario recibido: '" . $usuario . "'");
-error_log("Password recibido: '" . $password . "'");
-error_log("Longitud usuario: " . strlen($usuario));
-error_log("Longitud password: " . strlen($password));
-
-// Verificar caracter por caracter
-error_log("Usuario (bytes): " . implode(' ', array_map('ord', str_split($usuario))));
-error_log("Password (bytes): " . implode(' ', array_map('ord', str_split($password))));
+error_log("Usuario: '" . $usuario . "'");
+error_log("Password: '" . $password . "'");
 
 if(empty($usuario) || empty($password)) {
     error_log("❌ ERROR: Campos vacíos");
