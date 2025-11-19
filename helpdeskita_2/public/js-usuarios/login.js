@@ -1,19 +1,16 @@
 function loginusuario() {
     event.preventDefault();
     
-    console.log("🔍 === DEBUG DOMINIO CORRECTO ===");
-    console.log("URL actual:", window.location.href);
+    console.log("🔍 === DEBUG PROXY REVERSO ===");
     console.log("Hostname:", window.location.hostname);
+    console.log("URL completa:", window.location.href);
     
     var usuario = $('#login').val();
     var password = $('#password').val();
     
-    // URL base automática para el dominio correcto
-    var baseUrl = 'https://sistematickets.aguascalientes.tecnm.mx';
-    console.log("🎯 Usando dominio:", baseUrl);
-    
-    var url = baseUrl + "/helpdeskita_2/procesos/usuarios/login/loginUsuarios.php";
-    console.log("🔗 URL AJAX:", url);
+    // URL relativa - funcionará en ambos entornos
+    var url = "/helpdeskita_2/procesos/usuarios/login/loginUsuarios.php";
+    console.log("🔗 URL AJAX (relativa):", url);
     
     $.ajax({
         type: "POST",
@@ -23,14 +20,14 @@ function loginusuario() {
             password: password
         },
         success: function(respuesta) {
-            console.log("✅ Respuesta del servidor:", respuesta.trim());
+            console.log("✅ Respuesta:", respuesta.trim());
             
             if(respuesta.trim() === "1") {
-                var redirectUrl = baseUrl + "/helpdeskita_2/vistas/inicio.php";
-                console.log("🔄 Redirigiendo a:", redirectUrl);
-                window.location.href = redirectUrl;
+                console.log("🎉 Login exitoso - Redirigiendo...");
+                // Usar URL relativa para la redirección también
+                window.location.href = "/helpdeskita_2/vistas/inicio.php";
             } else {
-                console.log("❌ Login fallido");
+                console.log("❌ Login fallido - Respuesta:", respuesta);
                 Swal.fire("Error", "Credenciales incorrectas", "error");
             }
         },
@@ -39,9 +36,10 @@ function loginusuario() {
             console.error("Status:", status);
             console.error("Error:", error);
             console.error("HTTP Status:", xhr.status);
-            console.error("Response:", xhr.responseText);
             
-            Swal.fire("Error de conexión", "No se pudo conectar con el servidor", "error");
+            Swal.fire("Error de conexión", 
+                "No se pudo conectar con el servidor. Error: " + error, 
+                "error");
         }
     });
     

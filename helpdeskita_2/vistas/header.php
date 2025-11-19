@@ -1,34 +1,45 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+// Incluir configuración común de sesión
+include_once '../config/session_config.php';
+
+// Iniciar sesión con la MISMA configuración
+iniciarSesionSegura();
+
+error_log("=== HEADER.PHP - Verificación ===");
+error_log("Session ID: " . session_id());
+error_log("Usuario en sesión: " . (isset($_SESSION['usuario']) ? 'SÍ' : 'NO'));
 
 if (!isset($_SESSION['usuario'])) {
+    error_log("❌ No hay usuario en sesión - Redirigiendo");
     header("location:../procesos/usuarios/login/salir.php");
     exit();
 }
+
+// Verificar que el usuario tenga rol válido
+$roles_permitidos = [1, 2, 3, 4, 5];
+if (!in_array($_SESSION['usuario']['rol'], $roles_permitidos)) {
+    error_log("❌ Rol no permitido: " . $_SESSION['usuario']['rol']);
+    header("location:../procesos/usuarios/login/salir.php");
+    exit();
+}
+
+error_log("✅ Usuario válido: " . $_SESSION['usuario']['nombre']);
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>WorkTrack</title>
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="../public/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
-          integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"
-          crossorigin="anonymous">
-
+    
     <!-- DataTables -->
     <link rel="stylesheet" href="../public/datatable/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="../public/datatable/responsive.bootstrap4.min.css">
-    <link rel="stylesheet" href="../public/datatable/buttons.dataTables.min.css">
-
+    
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/cb918a26fb.js" crossorigin="anonymous"></script>
 
