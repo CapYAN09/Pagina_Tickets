@@ -1,18 +1,42 @@
 <?php
-    include "../../../clases/Usuarios.php";
-    session_start();
-    
-    $usuario = $_POST['login'];
-    $password = $_POST['password']; // Mantener en texto plano
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-    // DEBUG: Verificar qué se está enviando
-    error_log("Login attempt - Usuario: " . $usuario . ", Password: " . $password);
-     
+// Log detallado
+error_log("=== LOGINUSUARIOS.PHP INICIADO ===");
+
+// Incluir usando rutas absolutas
+$ruta_base = $_SERVER['DOCUMENT_ROOT'] . '/helpdeskita_2';
+include_once $ruta_base . '/clases/funciones_encriptacion.php';
+include_once $ruta_base . '/clases/Usuarios.php';
+
+session_start();
+
+// Verificar datos POST
+if(empty($_POST['login']) || empty($_POST['password'])) {
+    error_log("ERROR: Campos POST vacíos");
+    echo "0";
+    exit;
+}
+
+$usuario = $_POST['login'];
+$password = $_POST['password'];
+
+error_log("Procesando login para: $usuario");
+
+try {
     $Usuarios = new Usuarios();
     
-    // Enviar la contraseña en texto plano, NO encriptada
+    // DEBUG: Verificar contraseñas
+    error_log("Password recibido: $password");
+    
     $resultado = $Usuarios->loginUsuario($usuario, $password);
     
-    error_log("Resultado del login: " . $resultado);
+    error_log("Resultado final: $resultado");
     echo $resultado;
+    
+} catch(Exception $e) {
+    error_log("EXCEPCIÓN: " . $e->getMessage());
+    echo "0";
+}
 ?>

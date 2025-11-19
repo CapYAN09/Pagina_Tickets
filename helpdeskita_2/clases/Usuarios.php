@@ -8,33 +8,34 @@
         //funcion login usuario CORREGIDA
 public function loginUsuario($usuario, $passwordPlain)
 {
+    error_log("=== loginUsuario INICIADA ===");
+    error_log("Usuario: $usuario");
+    error_log("Password (plain): $passwordPlain");
+    
     $conexion = conexion::conectar();
+    if(!$conexion) {
+        error_log("ERROR: No hay conexión a la BD");
+        return 0;
+    }
+    error_log("✅ Conexión a BD establecida");
     
-    // DEBUG
-    error_log("Buscando usuario: " . $usuario);
-    error_log("Password plain: " . $passwordPlain);
-    
-    // 1. Buscar solo por usuario
     $sql = "SELECT * FROM t_usuarios WHERE usuario = ?";
     $stmt = $conexion->prepare($sql);
     $stmt->bind_param("s", $usuario);
     $stmt->execute();
     $respuesta = $stmt->get_result();
     
-    if(mysqli_num_rows($respuesta) > 0)
-    {
+    error_log("Número de filas encontradas: " . mysqli_num_rows($respuesta));
+    
+    if(mysqli_num_rows($respuesta) > 0) {
         $datosUsuario = mysqli_fetch_array($respuesta);
+        error_log("✅ Usuario encontrado: " . $datosUsuario['usuario']);
+        error_log("Password en BD: " . $datosUsuario['password']);
         
-        // DEBUG
-        error_log("Usuario encontrado: " . $datosUsuario['usuario']);
-        error_log("Password BD (encriptado): " . $datosUsuario['password']);
-        
-        // 2. Desencriptar la contraseña de la BD
+        // Desencriptar y comparar
         $passwordBDDesencriptada = getUnencryptedPassword($datosUsuario['password']);
-        
-        // DEBUG
-        error_log("Password BD (desencriptado): " . $passwordBDDesencriptada);
-        error_log("Comparando: '" . $passwordPlain . "' vs '" . $passwordBDDesencriptada . "'");
+        error_log("Password BD desencriptado: $passwordBDDesencriptada");
+        error_log("Comparando: '$passwordPlain' vs '$passwordBDDesencriptada'");
         error_log("¿Coinciden?: " . ($passwordPlain === $passwordBDDesencriptada ? 'SÍ' : 'NO'));
         
         if($passwordPlain === $passwordBDDesencriptada) {
@@ -43,11 +44,12 @@ public function loginUsuario($usuario, $passwordPlain)
             $_SESSION['usuario']['rol'] = $datosUsuario['id_rol'];
             $_SESSION['usuario']['ubicacion'] = $datosUsuario['ubicacion'];
             
+            error_log("✅ Sesión creada exitosamente");
             $stmt->close();
             return 1;
         }
     } else {
-        error_log("Usuario NO encontrado en BD");
+        error_log("❌ Usuario NO encontrado en BD");
     }
     
     $stmt->close();
