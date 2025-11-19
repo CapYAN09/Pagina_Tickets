@@ -1,0 +1,200 @@
+.estado-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 200px;
+}
+
+.estado-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.estado-item.activo {
+    background-color: #e7f3ff;
+    border-color: #007bff;
+    box-shadow: 0 2px 4px rgba(0,123,255,0.2);
+}
+
+.custom-checkbox {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #dee2e6;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.custom-checkbox.warning {
+    border-color: #ffc107;
+    background-color: #fff3cd;
+}
+
+.custom-checkbox.info {
+    border-color: #17a2b8;
+    background-color: #d1ecf1;
+}
+
+.custom-checkbox.success {
+    border-color: #28a745;
+    background-color: #d4edda;
+}
+
+.custom-checkbox.danger {
+    border-color: #dc3545;
+    background-color: #f8d7da;
+}
+
+.custom-checkbox.checked {
+    border-width: 3px;
+}
+
+.custom-checkbox.checked.warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.custom-checkbox.checked.info {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+
+.custom-checkbox.checked.success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.custom-checkbox.checked.danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.check-icon {
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.custom-checkbox.checked .check-icon {
+    opacity: 1;
+}
+
+.estado-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.estado-icon {
+    font-size: 16px;
+}
+
+.estado-texto {
+    font-weight: 500;
+    color: #495057;
+    font-size: 14px;
+}
+
+.estado-item.activo .estado-texto {
+    color: #007bff;
+    font-weight: 600;
+}
+
+/* Estilos para el solicitante */
+.solicitante-info {
+    line-height: 1.3;
+}
+
+.solicitante-nombre {
+    color: #2c3e50;
+    font-size: 14px;
+}
+
+.solicitante-area {
+    font-size: 12px;
+}
+
+/* Estilos para la fecha */
+.fecha-info {
+    line-height: 1.3;
+    text-align: center;
+}
+
+.fecha-texto {
+    color: #2c3e50;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.fecha-hora {
+    font-size: 11px;
+}
+
+/* Estilos para la descripción */
+.descripcion-contenido {
+    max-width: 300px;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #495057;
+}
+
+/* Efectos hover */
+.estado-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .estado-container {
+        max-width: 100%;
+    }
+    
+    .estado-item {
+        padding: 6px 10px;
+    }
+    
+    .estado-texto {
+        font-size: 12px;
+    }
+    
+    .solicitante-nombre,
+    .fecha-texto,
+    .descripcion-contenido {
+        font-size: 12px;
+    }
+    
+    .solicitante-area,
+    .fecha-hora {
+        font-size: 10px;
+    }
+    
+    .descripcion-contenido {
+        max-width: 200px;
+    }
+}
+
+/* Mejoras generales de la tabla */
+#tablaReportesAdminDataTable th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #dee2e6;
+}
+
+#tablaReportesAdminDataTable td {
+    vertical-align: middle;
+    padding: 12px 8px;
+}
