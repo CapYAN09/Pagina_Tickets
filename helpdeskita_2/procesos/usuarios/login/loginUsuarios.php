@@ -9,8 +9,8 @@ error_log("🎯 loginUsuarios.php EJECUTÁNDOSE");
 $ruta_base = $_SERVER['DOCUMENT_ROOT'] . '/helpdeskita_2';
 
 // Incluir los archivos necesarios
-include_once $ruta_base . '/clases/funciones_encriptacion.php';
-include_once $ruta_base . '/clases/Usuarios.php';
+include_once $ruta_base . '../../../clases/funciones_encriptacion.php';
+include_once $ruta_base . '../../../clases/Usuarios.php';
 
 session_start();
 
