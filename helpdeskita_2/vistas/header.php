@@ -137,6 +137,7 @@ if (!isset($_SESSION['usuario'])) {
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;
+    color: black !important;
     
   }
 </style>
