@@ -55,7 +55,7 @@ public function loginUsuario($usuario, $passwordPlain)
     $stmt->close();
     return 0;
 }
-
+ 
         //funcion agregar datos personales del usuario
         public function agregarPersona($datos)
         {

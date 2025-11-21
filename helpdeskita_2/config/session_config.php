@@ -1,5 +1,6 @@
 <?php
 // config/session_config.php
+session_start();
 function iniciarSesionSegura() {
     if (session_status() === PHP_SESSION_NONE) {
         // Configuración consistente para sesiones

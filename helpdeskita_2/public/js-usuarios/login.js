@@ -1,6 +1,6 @@
 // login.js - VERSIÓN DEPURADA
 console.log("🔧 login.js cargado correctamente");
-
+ 
 function loginusuario() {
     console.log("🎯 FUNCIÓN loginusuario INICIADA");
     
