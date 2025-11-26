@@ -16,11 +16,11 @@
         <!-- Formulario en modal -->
         <div class="row mb-3">
             <div class="col-sm-4">
-                <label for="paternou"> Apellido paterno </label>
+                <label for="paternou"> Apellido Paterno </label>
                 <input type="text" class="form-control" id="paternou" name="paternou" required>
             </div>
             <div class="col-sm-4">
-                <label for="maternou"> Apellido materno </label>
+                <label for="maternou"> Apellido Materno </label>
                 <input type="text" class="form-control" id="maternou" name="maternou" required>
             </div>
             <div class="col-sm-4">
@@ -51,7 +51,14 @@
             </div>
             <div class="col-sm-4">
                 <label for="contraseñau"> Contraseña </label>
-                <input type="password" class="form-control" id="contraseñau" name="contraseñau" required>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="contraseñau" name="contraseñau" required>
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" id="togglePasswordu">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -62,6 +69,7 @@
                     <option value="1">Cliente</option>
                     <option value="2">Administrador</option>
                     <option value="3">Auditor</option>
+                    <option value="4">Trabajador</option>
                 </select>
             </div>
         </div>
@@ -222,6 +230,32 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Función para mostrar/ocultar contraseña
+function togglePasswordVisibility() {
+    const passwordField = document.getElementById('contraseñau');
+    const toggleButton = document.getElementById('togglePasswordu');
+    const icon = toggleButton.querySelector('i');
+    
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        passwordField.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+
+// Agregar el evento en el DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+    // ... código existente ...
+    
+    // Agregar evento para mostrar/ocultar contraseña
+    document.getElementById('togglePasswordu').addEventListener('click', togglePasswordVisibility);
+});
+
 </script>
 
 <style>
@@ -230,3 +264,4 @@ document.addEventListener('DOMContentLoaded', function() {
     font-weight: bold;
 }
 </style>
+

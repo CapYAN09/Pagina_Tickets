@@ -60,7 +60,7 @@
                                 <option value="1">Cliente</option>
                                 <option value="2">Administrador</option>
                                 <option value="3">Auditor</option>
-                                <option value="4">Personal</option>
+                                <option value="4">Trabajador</option>
                             </select>
                         </div>
                     </div>

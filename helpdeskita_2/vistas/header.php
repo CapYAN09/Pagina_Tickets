@@ -36,9 +36,14 @@ error_log("✅ Usuario válido: " . $_SESSION['usuario']['nombre']);
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="../public/bootstrap/bootstrap.min.css">
-    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+          integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"
+          crossorigin="anonymous">
+
     <!-- DataTables -->
     <link rel="stylesheet" href="../public/datatable/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="../public/datatable/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="../public/datatable/buttons.dataTables.min.css">
     
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/cb918a26fb.js" crossorigin="anonymous"></script>
