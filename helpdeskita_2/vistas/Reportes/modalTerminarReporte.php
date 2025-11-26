@@ -51,14 +51,11 @@
             </div>
 
             <div class="col-sm-12">
-                <label for="material"> material Utilizados </label>
+                <label for="material"> Material Utilizados </label>
                 <textarea name="material" id="material" class="form-control" required></textarea>
             </div>
 
-            <div class="col-sm-9">
-                 <label for="verificadoLiberado"> Verificado y Liberado por: </label>
-                 <input type="text" class="form-control" name="verificadoLiberado" id="verificadoLiberado" required>
-            </div>
+           
         </div>
 
         <div class="row">
@@ -107,7 +104,7 @@
     function validarFormulario() {
         const camposRequeridos = [
             'mantenimiento', 'tipoServicio', 'fechaRealizacion',
-            'trabajoRealizado','material' ,'verificadoLiberado', 'fechaAprobado'
+            'trabajoRealizado','material' , 'fechaAprobado'
         ];
 
         let camposVacios = [];

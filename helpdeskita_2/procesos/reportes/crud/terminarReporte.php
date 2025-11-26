@@ -10,7 +10,7 @@ $datos = array(
    "fechaRealizacion" => $_POST['fechaRealizacion'],
    "trabajoRealizado" => $_POST['trabajoRealizado'],
    "material" => $_POST['material'],
-   "verificadoLiberado" => $_POST['verificadoLiberado'],
+   //"verificadoLiberado" => $_POST['verificadoLiberado'],
    //"fechaVerificado" => $_POST['fechaVerificado'],
    "fechaAprobado" => $_POST['fechaAprobado']
 );

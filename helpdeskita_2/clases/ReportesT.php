@@ -24,6 +24,8 @@ class ReportesT extends conexion
         
         // OBTENER LA FECHA DE ELABORACIÓN DEL REPORTE ORIGINAL
         $fechaElaboracion = $this->obtenerFechaElaboracion($datos['idReporte']);
+
+        $nombreVerificadoLiberado = $this->obtenerNombreUsuarioReporte($datos['idReporte']);
         
         // Consulta INSERT actualizada - ahora guardamos el NOMBRE en lugar del ID
         $sql = "
@@ -49,7 +51,7 @@ class ReportesT extends conexion
             '".mysqli_real_escape_string($conexion, $datos['fechaRealizacion'])."', 
             '".mysqli_real_escape_string($conexion, $datos['trabajoRealizado'])."', 
             '".mysqli_real_escape_string($conexion, $datos['material'])."', 
-            '".mysqli_real_escape_string($conexion, $datos['verificadoLiberado'])."', 
+            '".mysqli_real_escape_string($conexion, $nombreVerificadoLiberado)."', 
             '".mysqli_real_escape_string($conexion, $fechaElaboracion)."',  -- AQUÍ VA LA FECHA DE ELABORACIÓN
             '".mysqli_real_escape_string($conexion, $aprobado)."',
             '".mysqli_real_escape_string($conexion, $datos['fechaAprobado'])."'
@@ -69,6 +71,53 @@ class ReportesT extends conexion
             throw new Exception("Error en la consulta: " . mysqli_error($conexion));
         }
     }
+
+
+////////////////////////////////
+
+ private function obtenerNombreUsuarioReporte($idReporte)
+{
+    try {
+        $conexion = Conexion::conectar();
+        
+        if (!$conexion) {
+            return 'Usuario Sistema';
+        }
+        
+        // Consulta corregida con las tablas reales
+        $sql = "
+            SELECT per.nombre, per.paterno, per.materno 
+            FROM t_reportes rep
+            INNER JOIN t_usuarios usu ON rep.id_usuario = usu.id_usuario
+            INNER JOIN t_persona per ON usu.id_persona = per.id_persona
+            WHERE rep.id_reporte = '".mysqli_real_escape_string($conexion, $idReporte)."'
+        ";
+        
+        $resultado = mysqli_query($conexion, $sql);
+        
+        if ($resultado && mysqli_num_rows($resultado) > 0) {
+            $fila = mysqli_fetch_assoc($resultado);
+            
+            // Construir el nombre completo
+            $nombreCompleto = $fila['nombre'] . ' ' . $fila['paterno'];
+            if (!empty($fila['materno'])) {
+                $nombreCompleto .= ' ' . $fila['materno'];
+            }
+            
+            return $nombreCompleto;
+        } else {
+            return 'Usuario Sistema';
+        }
+        
+    } catch (Exception $e) {
+        return 'Usuario Sistema';
+    }
+}
+
+
+//////////////////////////////
+
+
 
     // NUEVA FUNCIÓN: Obtener la fecha de elaboración del reporte original
     private function obtenerFechaElaboracion($idReporte)

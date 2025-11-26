@@ -1,5 +1,5 @@
 <form id="frmFirmar" method="POST" onsubmit="return FirmarReporte(<?php echo $mostrar ['idReporte'];?>)">
-
+ 
 <!-- Modal Firmar -->
 <div class="modal fade" id="modalFirmarReporte" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -16,7 +16,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <label for="men"> Al hacer click en aceptar, se da por hecho que el documento está firmado y listo para
-                  ser recogido por el personal de centro de cómputo, ¿esta seguro/a de esto?
+                  ser recogido por el personal del departamento asignado, ¿esta seguro/a de esto?
                 </label>
             </div>
         </div>

@@ -129,23 +129,29 @@
             return $datos;
         }
 
-
-        public function FirmarReporte($datos)
-        {
-          $conexion = Conexion::conectar();
-          $sql ="UPDATE t_reportes_finalizados
-                 SET firma_verificacion = 2
-                 WHERE id_reporte = '".$datos['idReporte']."' ";
-          $resultado = mysqli_query($conexion, $sql);
-          if($resultado)
-          {
-            return 1;
-          }
-          else{
-            return 0;
-          }
-          //return $sql;
-        }
+public function FirmarReporte($datos)
+{
+    $conexion = Conexion::conectar();
+    
+    // Obtener la fecha actual de la computadora en formato YYYY-MM-DD
+    $fecha_actual = date('Y-m-d');
+    
+    $sql = "UPDATE t_reportes_finalizados
+            SET firma_verificacion = 2,
+                fecha_verificado = '".mysqli_real_escape_string($conexion, $fecha_actual)."'
+            WHERE id_reporte = '".$datos['idReporte']."' ";
+    
+    $resultado = mysqli_query($conexion, $sql);
+    
+    if($resultado)
+    {
+        return 1;
+    }
+    else{
+        return 0;
+    }
+}
+        
 
 
     }

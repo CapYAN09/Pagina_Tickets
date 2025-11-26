@@ -58,17 +58,17 @@ $numFilas = mysqli_num_rows($respuesta);
             <th>Id Reporte</th>
             <th>Departamento</th>
             <th>Área Solicitante</th>
+            <th>Firmado</th>
             <th>Mantenimiento</th>
             <th>Tipo servicio</th>
             <th>Asignado</th>
             <th>Fecha realización</th>
             <th>Trabajo realizado</th>
-            <th>Verificado</th>
+            <th>Solisitante</th>
             <th>Fecha de verificado</th>
             <th>Aprobado</th>
             <th>Fecha de aprobado</th>
             <th>Imprimir reporte</th>
-            <th>Firmado</th>
             <th>¿Reporte recogido?</th>
         </tr>
     </thead>
@@ -86,24 +86,6 @@ $numFilas = mysqli_num_rows($respuesta);
             <td><?php echo $mostrar['idReporte']; ?></td>
             <td><?php echo $mostrar['departamento']; ?></td>
             <td><?php echo $mostrar['areaSolicitante']; ?></td>
-            <td><?php echo $mostrar['mantenimiento']; ?></td>
-            <td><?php echo $mostrar['tipoServicio']; ?></td>
-            <td><?php echo $mostrar['asignado']; ?></td>
-            <td><?php echo $mostrar['fechaRealizacion']; ?></td>
-            <td><?php echo $trabajoRealizado; ?></td>
-            <td><?php echo $mostrar['verificadoLiberado']; ?></td>
-            <td><?php echo $mostrar['fechaVerificado']; ?></td>
-            <td><?php echo $mostrar['nombreEncargado']; ?></td>
-            <td><?php echo $mostrar['fechaAprobado']; ?></td>
-            
-            <td>
-                <?php if($mostrar['estado'] == 3): ?>
-                    <button class="btn btn-warning btn-sm" onclick="generarPDF2(<?php echo $mostrar['idReporte'];?>)">
-                        <i class="fas fa-print"></i>
-                    </button>
-                <?php endif; ?>
-            </td>
-
             <td>
                 <?php if($mostrar['firmaVerificacion'] == 1): ?>
                   <button type="button" class="btn btn-danger btn-sm" disabled>
@@ -115,6 +97,29 @@ $numFilas = mysqli_num_rows($respuesta);
                   </button>
                 <?php endif; ?>
             </td>
+            <td><?php echo $mostrar['mantenimiento']; ?></td>
+            <td><?php echo $mostrar['tipoServicio']; ?></td>
+            <td><?php echo $mostrar['asignado']; ?></td>
+            <td><?php echo $mostrar['fechaRealizacion']; ?></td>
+            <td><?php echo $trabajoRealizado; ?></td>
+            <td><?php echo $mostrar['verificadoLiberado']; ?></td>
+            <td><?php echo $mostrar['fechaVerificado']; ?></td>
+            <td><?php echo $mostrar['nombreEncargado']; ?></td>
+            <td><?php echo $mostrar['fechaAprobado']; ?></td>
+            
+            <td>
+                <?php if($mostrar['estado'] == 3 && $mostrar['firmaVerificacion'] == 2): ?>
+                    <button class="btn btn-info btn-sm" onclick="generarPDF2(<?php echo $mostrar['idReporte'];?>)">
+                        <i class="fas fa-print"></i>
+                    </button>
+                <?php else: ?>
+                    <button class="btn btn-warning btn-sm" disabled>
+                        <i class="fas fa-print"></i>
+                    </button>
+                <?php endif; ?>
+            </td>
+
+           
 
             <td>
                 <?php if($mostrar['recogido'] == 1 && $mostrar['firmaVerificacion'] == 1): ?>

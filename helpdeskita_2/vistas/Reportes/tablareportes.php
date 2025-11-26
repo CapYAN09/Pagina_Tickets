@@ -87,9 +87,6 @@
             <td><?php echo $mostrar['fechaElaboracion']; ?></td>
             <td><?php echo $mostrar['descripcion']; ?></td>
            
-            
-           
-
             <td>
                 <?php if($mostrar['estado'] == 1) {?>
                     <button class="btn btn-warning btn-sm" disabled>
@@ -105,8 +102,9 @@
                     }
                 ?>
             </td>
+            
             <td>
-                <?php if($mostrar['estado'] == 3) {?>
+                <?php if($mostrar['estado'] == 3 && $mostrar['firmaVerificacion'] == 2) {?>
                   <button type="button" class="btn btn-info btn-sm" onclick="generarPDF2(<?php echo $mostrar['idReporte']; ?>)">
                       <i class="fas fa-print"></i>
                   </button>

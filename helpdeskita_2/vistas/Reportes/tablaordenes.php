@@ -46,7 +46,7 @@ $respuesta = mysqli_query($conexion1, $sql) or die(mysqli_error($conexion1));
 <table class="table table-sm dt-responsive nowrap" id="tablaReportesAdminDataTable" style="width:100%">
 
     <thead>
-
+ 
         <th>Id Reporte</th>
         <th>Mantenimiento</th>
         <th>Tipo serivicio</th>
