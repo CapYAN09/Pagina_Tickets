@@ -20,7 +20,7 @@
 <div class="container">
   <div class="card border-0 shadow my-5">
     <div class="card-body p-5">
-      <h1 class="fw-light">Mis Serivicios Pendientes</h1>
+      <h1 class="fw-light">Mis Servicios Pendientes</h1>
       <p class="lead">
 
         <hr>
