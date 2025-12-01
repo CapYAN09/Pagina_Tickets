@@ -1,5 +1,5 @@
 <?php
-
+ 
     include "conexion.php";
 
     class Reportes extends conexion
@@ -17,17 +17,29 @@
             $con = mysqli_connect($servidor, $usuario, $password, $db);
             $con->set_charset("utf8");
 
+            // Escapar todos los valores para evitar SQL injection
+            $folio = mysqli_real_escape_string($con, $datos['folio']);
+            $id_usuario = mysqli_real_escape_string($con, $datos['id_usuario']);
+            $area_solicitante = mysqli_real_escape_string($con, $datos['area_solicitante']);
+            $id_depa = mysqli_real_escape_string($con, $datos['id_depa']);
+            $nombre_solicitante = mysqli_real_escape_string($con, $datos['nombre_solicitante']);
+            $fecha_elaboracion = mysqli_real_escape_string($con, $datos['fecha_elaboracion']);
+            $descripcion = mysqli_real_escape_string($con, $datos['descripcion']);
+            $edificio = mysqli_real_escape_string($con, $datos['edificio']);
+            $cubi = mysqli_real_escape_string($con, $datos['cubi']);
             
-            $sql = "INSERT INTO t_reportes(folio, id_usuario, area_solicitante, id_depa, nombre_solicitante, fecha_elaboracion, descripcion)
-                    VALUES (
-                        '".$datos['folio']."',
-                        '".$datos['id_usuario']."',
-                        '".$datos['area_solicitante']."',
-                        '".$datos['id_depa']."',
-                        '".$datos['nombre_solicitante']."',
-                        '".$datos['fecha_elaboracion']."',
-                        '".$datos['descripcion']."'
-                    )";
+            $sql = "INSERT INTO t_reportes(folio, id_usuario, area_solicitante, id_depa, nombre_solicitante, fecha_elaboracion, descripcion, edificio, cubi)
+        VALUES (
+            '".$datos['folio']."',
+            '".$datos['id_usuario']."',
+            '".$datos['area_solicitante']."',
+            '".$datos['id_depa']."',
+            '".$datos['nombre_solicitante']."',
+            '".$datos['fecha_elaboracion']."',
+            '".$datos['descripcion']."',
+            '".$datos['edificio']."',
+            '".$datos['cubi']."'
+        )";
 
             $result = mysqli_query($con, $sql);
 
@@ -35,12 +47,12 @@
             
                 $id_reporte = mysqli_insert_id($con);
 
-               
+                // Determinar la tabla destino según el departamento
                 $tablaDestino = "";
                 $campoAuto = "";
                 $prefijo = "";
 
-                switch ($datos['id_depa']) {
+                switch ($id_depa) {
                     case 1:
                         $tablaDestino = "cat_cc";
                         $campoAuto = "id_reporte_CC";
@@ -58,7 +70,7 @@
                         break;
                 }
 
-                
+                // Si se determinó una tabla destino, insertar el nuevo ID
                 if ($tablaDestino != "") {
 
                     // Obtener el último código generado en esa tabla
@@ -82,7 +94,8 @@
 
                 return "1";
             } else {
-                return "0";
+                // Para debug: mostrar el error
+                return "Error: " . mysqli_error($con);
             }
         }
 

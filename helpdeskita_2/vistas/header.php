@@ -32,7 +32,7 @@ error_log("✅ Usuario válido: " . $_SESSION['usuario']['nombre']);
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkTrack</title>
+    <title>SGMIE</title>
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="../public/bootstrap/bootstrap.min.css">
@@ -57,7 +57,7 @@ error_log("✅ Usuario válido: " . $_SESSION['usuario']['nombre']);
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">WorkTrack</a>
+    <a class="navbar-brand" href="#">SGMIE</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse"
             data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent"

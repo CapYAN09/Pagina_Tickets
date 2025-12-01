@@ -102,6 +102,26 @@ $externo_x = ($datosReporte[0]['mantenimiento'] != "1") ? 'X' : '';
 // 🔹 Variables para Tipo de Servicio (podrías tener más opciones aquí)
 $tipo_servicio = $datosReporte[0]['tipoServicio'];
 
+// 🔹 FUNCIONES PARA FORMATO DE FECHA
+function formatearFecha($fecha) {
+    if (empty($fecha) || $fecha == '0000-00-00') {
+        return '';
+    }
+    
+    $timestamp = strtotime($fecha);
+    if ($timestamp === false) {
+        return $fecha; // Devolver la fecha original si no se puede convertir
+    }
+    
+    // Formato: día/mes/año (01/11/2025)
+    return date('d/m/Y', $timestamp);
+}
+
+// Formatear las fechas
+$fecha_realizacion_formateada = formatearFecha($datosReporte[0]['fechaRealizacion']);
+$fecha_verificado_formateada = formatearFecha($datosReporte[0]['fechaVerificado']);
+$fecha_aprobado_formateada = formatearFecha($datosReporte[0]['fechaAprobado']);
+
 // Ruta de la imagen
 $imagen_fondo = __DIR__ . '/orden.jpg';
 
@@ -244,13 +264,13 @@ $html = '
     <!-- OTROS DATOS -->
     <div class="datos tipo-servicio">' . $tipo_servicio . '</div>
     <div class="datos asignado">' . $datosReporte[0]['asignado'] . '</div>
-    <div class="datos fecha-realizacion">' . $datosReporte[0]['fechaRealizacion'] . '</div>
+    <div class="datos fecha-realizacion">' . $fecha_realizacion_formateada . '</div>
     <div class="datos trabajo-realizado">' . $datosReporte[0]['trabajoRealizado'] . '</div>
     <div class="datos material">' . $datosReporte[0]['material'] . '</div>
     <div class="datos verificado-por">' . $datosReporte[0]['verificadoLiberado'] . '</div>
-    <div class="datos fecha-verificado">' . $datosReporte[0]['fechaVerificado'] . '</div>
+    <div class="datos fecha-verificado">' . $fecha_verificado_formateada . '</div>
     <div class="datos aprobado-por">' . $datosReporte[0]['nombreEncargado'] . '</div>
-    <div class="datos fecha-aprobado">' . $datosReporte[0]['fechaAprobado'] . '</div>
+    <div class="datos fecha-aprobado">' . $fecha_aprobado_formateada . '</div>
 </body>
 </html>
 ';

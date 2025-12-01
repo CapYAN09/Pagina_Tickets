@@ -25,29 +25,31 @@
             </div>
             <select name="areaSolicitante" id="areaSolicitante" class="form-control" size="5" required>
               <option value="Departamento de planeación programación presupuestal">Departamento de planeación programación presupuestal</option>
-                    <option value="Departamento de gestión tecnológica y vinculación">Departamento de gestión tecnológica y vinculación</option>
-                    <option value="Departamento de comunicación y difusión">Departamento de comunicación y difusión</option>
-                    <option value="Departamento de actividades extraescolares">Departamento de actividades extraescolares</option>
-                    <option value="Departamento de servicios escolares">Departamento de servicios escolares</option>
-                    <option value="Centro de computo">Centro de computo</option>
-                    <option value="Mantenimiento de equipos">Mantenimiento de equipos</option>
-                    <option value="Recursos materiales y servicios">Recursos materiales y servicios</option>
-                    <option value="Departamento de ciencias básicas">Departamento de ciencias básicas</option>
-                    <option value="Departamento de sistemas de computación">Departamento de sistemas de computación</option>
-                    <option value="Departamento de metal-mecánica">Departamento de metal-mecánica</option>
-                    <option value="Departamento de ciencias de la tierra">Departamento de ciencias de la tierra</option>
-                    <option value="Departamento de ingeniería química y bioquímica">Departamento de ingeniería química y bioquímica</option>
-                    <option value="Departamento de ingeniería industrial">Departamento de ingeniería industrial</option>
-                    <option value="Departamento de ingeniería eléctrica y electrónica">Departamento de ingeniería eléctrica y electrónica</option>
-                    <option value="Departamento de desarrollo académico">Departamento de desarrollo académico</option>
-                    <option value="División de desarrollo académico">División de desarrollo académico</option>
-                    <option value="División de estudios profesionales">División de estudios profesionales</option>
-                    <option value="División de estudios de posgrado e investigación">División de estudios de posgrado e investigación</option>
-                    <option value="Departamento de recursos humanos">Departamento de recursos humanos</option>
-                    <option value="Departamento de recursos financieros">Departamento de recursos financieros</option>
-                </select>
+              <option value="Departamento de gestión tecnológica y vinculación">Departamento de gestión tecnológica y vinculación</option>
+              <option value="Departamento de comunicación y difusión">Departamento de comunicación y difusión</option>
+              <option value="Departamento de actividades extraescolares">Departamento de actividades extraescolares</option>
+              <option value="Departamento de servicios escolares">Departamento de servicios escolares</option>
+              <option value="Centro de computo">Centro de computo</option>
+              <option value="Mantenimiento de equipos">Mantenimiento de equipos</option>
+              <option value="Recursos materiales y servicios">Recursos materiales y servicios</option>
+              <option value="Departamento de ciencias básicas">Departamento de ciencias básicas</option>
+              <option value="Departamento de sistemas de computación">Departamento de sistemas de computación</option>
+              <option value="Departamento de metal-mecánica">Departamento de metal-mecánica</option>
+              <option value="Departamento de ciencias de la tierra">Departamento de ciencias de la tierra</option>
+              <option value="Departamento de ingeniería química y bioquímica">Departamento de ingeniería química y bioquímica</option>
+              <option value="Departamento de ingeniería industrial">Departamento de ingeniería industrial</option>
+              <option value="Departamento de ingeniería eléctrica y electrónica">Departamento de ingeniería eléctrica y electrónica</option>
+              <option value="Departamento de desarrollo académico">Departamento de desarrollo académico</option>
+              <option value="División de desarrollo académico">División de desarrollo académico</option>
+              <option value="División de estudios profesionales">División de estudios profesionales</option>
+              <option value="División de estudios de posgrado e investigación">División de estudios de posgrado e investigación</option>
+              <option value="Departamento de recursos humanos">Departamento de recursos humanos</option>
+              <option value="Departamento de recursos financieros">Departamento de recursos financieros</option>
+            </select>
           </div>
+        </div>
 
+        <div class="row">
           <div class="col-sm-7" style="margin-top: 10px">
             <label for="nombreSolicitante">Nombre del solicitante</label>
             <input type="text" class="form-control" id="nombreSolicitante" name="nombreSolicitante" required>
@@ -58,8 +60,22 @@
             <input type="date" class="form-control" id="fechaElaboracion" name="fechaElaboracion" required>
             <div class="invalid-feedback">No puedes seleccionar una fecha anterior a hoy.</div>
           </div>
+        </div>
 
-          <div class="col-sm-5" style="margin-top: 10px">
+        <div class="row">
+          <div class="col-sm-6" style="margin-top: 10px">
+            <label for="edificio">Edificio o área exterior</label>
+            <input type="text" class="form-control" id="edificio" name="edificio" placeholder="Ej. Edificio A, Edificio Principal, etc.">
+          </div>
+
+          <div class="col-sm-6" style="margin-top: 10px">
+            <label for="cubi">Área o Cubiculo</label>
+            <input type="text" class="form-control" id="cubi" name="cubi" placeholder="Ej. Cubículo 101, Oficina 203, etc.">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-10" style="margin-top: 10px">
             <label for="departamento">Departamento</label>
             <select class="form-control" id="departamento" name="departamento" required>
               <option value="">-- Selecciona un departamento --</option>
@@ -80,7 +96,7 @@
         </div>
 
         <div class="row">
-          <div class="col-sm-12">
+          <div class="col-sm-12" style="margin-top: 10px">
             <label for="descripcion">Descripción del servicio solicitado o falla a reparar</label>
             <textarea name="descripcion" id="descripcion" class="form-control" required></textarea>
           </div>

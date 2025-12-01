@@ -60,7 +60,7 @@
         <th>Descripción</th>
         <th>Estado</th>
         <th>Imprimir reporte terminado</th>
-        <th>¿Reporte Firmado?</th>
+        <th>¿Liberar Servicio Terminado?</th>
         <th>Reporte recogido</th>
 
     </thead>

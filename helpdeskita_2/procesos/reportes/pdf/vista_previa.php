@@ -16,21 +16,25 @@ require_once __DIR__ . '/../../../public/mpdf/vendor/autoload.php';
 
 // Conexión a la base de datos
 $servidor = "172.30.247.185";
-            $usuario = "ccomputo";
-            $password = "Jarjar0904$";
-            $puerto = 3306;
-            $db = "b1o04dzhm1guhvmjcrwb";
+$usuario = "ccomputo";
+$password = "Jarjar0904$";
+$puerto = 3306;
+$db = "b1o04dzhm1guhvmjcrwb";
 $conexion = mysqli_connect($servidor,$usuario,$password,$db);
 
-// CONSULTA PRINCIPAL
+// CONSULTA PRINCIPAL MODIFICADA - INCLUYENDO APELLIDOS DEL SOLICITANTE Y CAMPOS NUEVOS
 $consulta = "SELECT 
                 tr.id_reporte, 
-                tp.nombre, 
+                tp.nombre as nombre_solicitante,
+                tp.paterno as paterno_solicitante,
+                tp.materno as materno_solicitante,
                 tr.area_solicitante, 
                 tr.fecha_elaboracion, 
                 tr.descripcion, 
                 tr.id_depa,
                 tr.Asignado,
+                tr.edificio,      -- NUEVO CAMPO
+                tr.cubi,          -- NUEVO CAMPO
                 tu_asignado.id_usuario,
                 p_asignado.nombre as nombre_trabajador,
                 p_asignado.paterno as paterno_trabajador,
@@ -58,14 +62,64 @@ $x_recursos = ($id_depa == 3) ? 'X' : '';
 $x_mantenimiento = ($id_depa == 2) ? 'X' : '';
 $x_centro_computo = ($id_depa == 1) ? 'X' : '';
 
+// Obtener el nombre completo del SOLICITANTE (con apellidos)
+$nombre_completo_solicitante = $datosReporte["nombre_solicitante"];
+if (!empty($datosReporte["paterno_solicitante"])) {
+    $nombre_completo_solicitante .= ' ' . $datosReporte["paterno_solicitante"];
+}
+if (!empty($datosReporte["materno_solicitante"])) {
+    $nombre_completo_solicitante .= ' ' . $datosReporte["materno_solicitante"];
+}
+
 // Obtener el nombre completo del trabajador asignado (si existe)
 $trabajador_asignado = "No asignado";
 if (!empty($datosReporte["Asignado"]) && !empty($datosReporte["nombre_trabajador"])) {
-    $nombre_completo = $datosReporte["nombre_trabajador"] . ' ' . $datosReporte["paterno_trabajador"];
-    if (!empty($datosReporte["materno_trabajador"])) {
-        $nombre_completo .= ' ' . $datosReporte["materno_trabajador"];
+    $nombre_completo_trabajador = $datosReporte["nombre_trabajador"];
+    if (!empty($datosReporte["paterno_trabajador"])) {
+        $nombre_completo_trabajador .= ' ' . $datosReporte["paterno_trabajador"];
     }
-    $trabajador_asignado = $nombre_completo;
+    if (!empty($datosReporte["materno_trabajador"])) {
+        $nombre_completo_trabajador .= ' ' . $datosReporte["materno_trabajador"];
+    }
+    $trabajador_asignado = $nombre_completo_trabajador;
+}
+
+// Obtener edificio y cubículo (nuevos campos)
+$edificio = !empty($datosReporte["edificio"]) ? $datosReporte["edificio"] : "No especificado";
+$cubi = !empty($datosReporte["cubi"]) ? $datosReporte["cubi"] : "No especificado";
+
+// FORMATO DE FECHA: Convertir a formato "día, mes, año"
+$fecha_elaboracion = $datosReporte["fecha_elaboracion"];
+
+// Verificar si la fecha tiene un formato válido
+if (!empty($fecha_elaboracion)) {
+    // Convertir a timestamp
+    $timestamp = strtotime($fecha_elaboracion);
+    
+    if ($timestamp !== false) {
+        // Meses en español
+        $meses_espanol = array(
+            1 => '01', 2 => '02', 3 => '03', 4 => '04',
+            5 => '05', 6 => '06', 7 => '07', 8 => '08',
+            9 => '09', 10 => '10', 11 => '11', 12 => '12'
+        );
+        
+        // Extraer día, mes y año
+        $dia = date('d', $timestamp);
+        $mes_numero = date('n', $timestamp);
+        $ano = date('Y', $timestamp);
+        
+        // Obtener el nombre del mes en español
+        $mes = $meses_espanol[$mes_numero];
+        
+        // Formatear fecha como "15, Enero, 2024"
+        $fecha_formateada = $dia . '/' . $mes . '/' . $ano;
+    } else {
+        // Si no se puede convertir, mostrar la fecha original
+        $fecha_formateada = $fecha_elaboracion;
+    }
+} else {
+    $fecha_formateada = "Fecha no especificada";
 }
 
 // 🔹 Determinar tabla según id_depa
@@ -97,127 +151,222 @@ if (!empty($tabla_cat)) {
     }
 }
 
-// HTML del PDF
+// Ruta de la imagen
+$imagen_fondo = __DIR__ . '/soli.jpg';
+
+// Verificar si la imagen existe
+if (!file_exists($imagen_fondo)) {
+    die("No se encuentra la imagen: " . $imagen_fondo);
+}
+
+// Convertir imagen a base64
+$imagen_base64 = base64_encode(file_get_contents($imagen_fondo));
+$imagen_data_uri = 'data:image/jpeg;base64,' . $imagen_base64;
+
 $html = '
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title></title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        @page {
+            margin: 0;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            position: relative;
+            width: 210mm;
+            height: 297mm;
+            font-family: Arial, sans-serif;
+        }
+        .imagen-fondo {
+            width: 100%;
+            height: 200%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        .datos {
+            position: absolute;
+            z-index: 2;
+            font-family: Arial, sans-serif;
+            background: transparent;
+            border: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* ===== POSICIONES DE LOS DATOS - AJUSTA SEGÚN TU IMAGEN ===== */
+        
+        /* DEPARTAMENTOS - Ajusta estas coordenadas según donde están los cuadros en tu imagen */
+        .recursos { 
+            top: 63mm; 
+            left: 25mm; 
+            font-size: 14px; 
+            font-weight: bold; 
+            width: 10mm; 
+            text-align: center; 
+        }
+        .mantenimiento { 
+            top: 63mm; 
+            left: 78mm; 
+            font-size: 14px; 
+            font-weight: bold; 
+            width: 10mm; 
+            text-align: center; 
+        }
+        .computo { 
+            top: 63mm; 
+            left: 131mm; 
+            font-size: 14px; 
+            font-weight: bold; 
+            width: 10mm; 
+            text-align: center; 
+        }
+        
+        /* FOLIO - Ajusta según donde debe ir el número de folio */
+        .folio { 
+            top: 47mm; 
+            left: 150mm; 
+            font-size: 12px; 
+            font-weight: bold; 
+            width: 39mm; 
+        }
+        
+        /* ÁREA SOLICITANTE */
+        .area-solicitante { 
+            top: 82mm; 
+            left: 27mm; 
+            font-size: 13px; 
+            width: 80mm; 
+        }
+        
+        /* NOMBRE DEL SOLICITANTE*/
+        .nombre-solicitante { 
+            top: 101mm; 
+            left: 27mm; 
+            font-size: 13px; 
+            width: 80mm; 
+        }
+        
+        /* FECHA DE ELABORACIÓN */
+        .fecha-elaboracion { 
+            top: 120mm; 
+            left: 100mm; 
+            font-size: 13px; 
+            width: 80mm; 
+            color: red;
+        }
+        
+        /* EDIFICIO - NUEVO CAMPO */
+        .edificio { 
+            top: 220mm; 
+            left: 27mm; 
+            font-size: 13px; 
+            width: 70mm; 
+        }
+        
+        /* CUBÍCULO - NUEVO CAMPO */
+        .cubi { 
+            top: 220mm; 
+            left: 108mm; 
+            font-size: 13px; 
+            width: 70mm; 
+        }
+        
+        /* DESCRIPCIÓN DEL SERVICIO - Ajusta altura y ancho según el espacio disponible */
+        .descripcion { 
+            top: 140mm; 
+            left: 27mm; 
+            font-size: 13px; 
+            width: 155mm; 
+            height: 50mm; 
+            overflow: hidden; 
+            line-height: 1.2;
+            word-wrap: break-word;
+            word-break: break-word;
+            white-space: normal;
+            text-align: justify;
+        }
+        
+        /* TÉCNICO ASIGNADO */
+        .tecnico-asignado { 
+            top: 195mm; 
+            left: 50mm; 
+            font-size: 13px; 
+            width: 60mm; 
+        }
+        
+        /* COPIAS - Ajusta según donde están las líneas de copias */
+        .copias { 
+            top: 230mm; 
+            left: 25mm; 
+            font-size: 12px; 
+            width: 60mm; 
+            height: 8mm; 
+            overflow: hidden;
+            line-height: 1.0;
+            word-wrap: break-word;
+            word-break: keep-all;
+            white-space: normal;
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
-     <table class="table_footer">
-        <tr>
-            <td rowspan="3"><img src="logoITA.png" width="100px" height="75px" class="logo_ita_header"></td>
-            <td><strong>Nombre del Documento: Formato para Solicitud de Mantenimiento Correctivo</strong></td>
-            <td><strong>Código: ITA-AD-PO-001-02</strong></td>
-        </tr>
-        <tr>
-            <td rowspan="2"><strong>Referencia a la Norma ISO 9001:2015 6.1, 7.1, 7.2, 7.4, 7.5.1, 8.1</strong></td>
-            <td><strong>Revisión: 0</strong></td>
-        </tr>
-        <tr>
-            <td><strong>Página 1 de 2</strong></td>
-        </tr>
-    </table>
-    <p class="titulo"><strong>SOLICITUD MANTENIMIENTO CORRECTIVO</strong></p>
-
-    <table class="tabla_1">
-        <tr>
-            <td width="200px"><strong>Recursos Materiales y Servicios</strong></td>
-            <td width="35px" class="input">'.$x_recursos.'</td>
-        </tr>
-        <tr>
-            <td><strong>Mantenimiento de Equipo</strong></td>
-            <td class="input">'.$x_mantenimiento.'</td>
-        </tr>
-        <tr>
-            <td><strong>Centro de Cómputo</strong></td>
-            <td class="input">'.$x_centro_computo.'</td>
-        </tr>
-    </table>
-
-    <table class="folio">
-        <tr>
-            <td><strong>Folio:</strong></td>
-            <td width="120px" class="input">'.$folio_mostrar.'</td>
-        </tr>
-    </table>
-
-    <table class="area_solicitante" width="100%">
-        <tr>
-            <td><strong>Área Solicitante: </strong> '.$datosReporte["area_solicitante"].'</td>
-        </tr>
-    </table>
-
-    <table class="tabla_descripcion" width="100%">
-        <tr>
-            <td><strong>Nombre y Firma del Solicitante: </strong> '.$datosReporte["nombre"].'</td>
-        </tr>
-        <tr>
-            <td><strong>Fecha de Elaboración:</strong> '.$datosReporte["fecha_elaboracion"].'</td>
-        </tr>
-        <tr>
-            <td><br><strong>Descripción del servicio solicitado o falla a reparar:</strong> <p><br>'.$datosReporte["descripcion"].'</p></td>
-        </tr>
-    </table>
-
-    <table class="tabla_descripcion" width="100%">
-        <tr>
-            <td><strong>Técnico Asignado: </strong> '.$trabajador_asignado.'</td>
-        </tr>
-    </table>
-
-    <div class="texto_departamento">
-        c.c.p. Departamento de Planeación Programación y Presupuestación
-        <br>
-        c.c.p. Área Solicitante
-    </div>
+    <!-- IMAGEN DE FONDO -->
+    <img class="imagen-fondo" src="' . $imagen_data_uri . '">
+    
+    <!-- DATOS SOBREPUESTOS SOBRE LA IMAGEN -->
+    
+    <!-- DEPARTAMENTOS -->
+    <div class="datos recursos">' . $x_recursos . '</div>
+    <div class="datos mantenimiento">' . $x_mantenimiento . '</div>
+    <div class="datos computo">' . $x_centro_computo . '</div>
+    
+    <!-- FOLIO -->
+    <div class="datos folio">' . $folio_mostrar . '</div>
+    
+    <!-- ÁREA SOLICITANTE -->
+    <div class="datos area-solicitante">' . $datosReporte["area_solicitante"] . '</div>
+    
+    <!-- NOMBRE DEL SOLICITANTE (CON APELLIDOS) -->
+    <div class="datos nombre-solicitante">' . $nombre_completo_solicitante . '</div>
+    
+    <!-- FECHA DE ELABORACIÓN - FORMATEADA -->
+    <div class="datos fecha-elaboracion">' . $fecha_formateada . '</div>
+    
+    <!-- EDIFICIO (NUEVO CAMPO) -->
+    <div class="datos edificio">' . $edificio . '</div>
+    
+    <!-- CUBÍCULO (NUEVO CAMPO) -->
+    <div class="datos cubi">' . $cubi . '</div>
+    
+    <!-- DESCRIPCIÓN -->
+    <div class="datos descripcion">' . nl2br($datosReporte["descripcion"]) . '</div>
+    
+    
 </body>
 </html>
 ';
 
-// Generar el PDF
-$mpdf = new \Mpdf\Mpdf();
+// Create an instance of the class:
+$mpdf = new \Mpdf\Mpdf([
+    'format' => 'A4',
+    'margin_top' => 0,
+    'margin_right' => 0,
+    'margin_bottom' => 0,
+    'margin_left' => 0
+]);
+
+// Añadimos el html
 $mpdf->WriteHTML($html);
-$mpdf->SetHTMLFooter('
-<div style="color: #666; font-size: 9px; padding: 6px; border-top: 1px solid #ddd;">
-    <!-- Primer footer - Información institucional -->
 
+$mpdf->SetTitle("Servicio_Pendiente_" . $folio_mostrar);
+$mpdf->Output("Servicio_Pendiente_" . $folio_mostrar . ".pdf", "I");
 
-    <!-- Segundo footer - Instrucciones (solo texto normal) -->
-    <table width="100%" style="font-size: 8px; ">
-        <tr>
-            <td style="padding: 3px;">
-                <strong>Instrucciones:</strong> Anotar la clase de mantenimiento a realizar, por ejemplo, eléctrico, plomería, herrería, pintura, obra civil, entre otros si es interno y si es externo revisar el anexo 8 del MSGC.<br>
-                La firma puede ser autógrafa o digitalizada, preferentemente siendo esta última con la finalidad de que la versión se utilice de manera digital en contribución a la norma de Gestión ambiental.<br>
-                Anotar el nombre del Titular del Departamento de Recursos Materiales y Servicios o Mantenimiento de equipo o centro de cómputo según sea el caso, quien aprueba el trabajo liberado.
-            </td>
-        </tr>
-    </table>
-    <table width="100%" style="font-size: 9px; color: #666; margin-bottom: 8px;">
-        <tr>
-            <td width="25%"><strong>Elaborado por:</strong> Jefes de Centro de Computo, Mantenimiento de Equipo, Recursos Materiales y Servicios</td>
-            <td width="25%" align="center"><strong>Página 1 de 1</strong></td>
-            <td width="25%" align="center"><strong>Código:</strong> ITA-AR-MPC-FO-04</td>
-        </tr>
-        <tr>
-            <td><strong>Revisado por:</strong> Subdirector de Servicios Administrativos</td>
-            <td align="center"><strong>Revisión:</strong> 1</td>
-            <td align="center"><strong>Emisión:</strong> 07/11/2025</td>
-        </tr>
-        <tr>
-            <td colspan="3">
-                <strong>Referencia a las normas:</strong> ISO 9001:2015 6.1, 7.1, 7.2, 7.4, 7.5.1, 8.1, ISO 14001:2015 6.1, 7.1, 7.2, 7.4, 7.5.1, 8.1, ISO 45001:2018 6.1, 7.1, 7.2, 7.4, 7.5.1, 8.1, ISO 50001:2018 6.1, 7.1, 7.2, 7.4, 7.5.1, 8.1
-            </td>
-        </tr>
-    </table>
-    
-    
-</div>');
-
-$mpdf->SetTitle("Servicio_Pendiente_".$folio_mostrar);
-$mpdf->Output("Servicio_Pendiente_".$folio_mostrar.".pdf","I");
+// Cerrar conexión
+mysqli_close($conexion);
 ?>
