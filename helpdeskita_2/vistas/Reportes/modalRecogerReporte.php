@@ -16,7 +16,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <label for="men"> Al hacer click en aceptar, se da por hecho que el documento fue recogido por el personal
-                    del centro de cómputo y se le confirmará al solicitante del servicio sobre esto, ¿está seguro/a?
+                    del Departamento solisitado y se le confirmará al solicitante del servicio sobre esto, ¿está seguro/a?
                 </label>
             </div>
         </div>

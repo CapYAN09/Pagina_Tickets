@@ -17,7 +17,7 @@
         <!-- Formulario en modal -->
         <div class="row">
             <div class="col-sm-12">
-                <label for="men"> Al hacer click en aceptar, estara cancelando la solicitud de trabajo escribiendo los motivos de dicho 
+                <label for="men"> Al hacer click en aceptar, estara cancelando la solicitud de trabajo escribiendo los motivos del por que cancelarlo
                 </label>
             </div>
             <div class="col-sm-12">
