@@ -6,7 +6,7 @@
   $conexion1 = $con->conectar();
   $idUsuario = $_SESSION['usuario']['id'];
 
-  if(isset($_SESSION['usuario']) && $_SESSION['usuario']['rol'] == 1){
+  if(isset($_SESSION['usuario']) && $_SESSION['usuario']['rol'] == 1 || $_SESSION['usuario']['rol'] == 2){
 
 ?>
 

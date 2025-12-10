@@ -101,7 +101,7 @@
         <th style="min-width: 200px; max-width: 300px;">Descripción</th>
         <th>Estado</th>
         <th>Comentarios</th>
-        <th>Acciones</th> <!-- NUEVA COLUMNA PARA ACCIONES -->
+        <!-- SE ELIMINÓ LA COLUMNA "Acciones" -->
     </thead>
 
     <tbody>
@@ -170,13 +170,7 @@
                         <span class="text-muted">-</span>
                     <?php endif; ?>
                 </td>
-                <td>
-                    <?php if($mostrar['estado'] == 1): ?>
-                        <button class="btn btn-info btn-sm" onclick="generarPDF2('<?php echo $mostrar['reporte']; ?>', '<?php echo $folioMostrar; ?>')">
-                            <i class="fas fa-file-pdf"></i> PDF
-                        </button>
-                    <?php endif; ?>
-                </td>
+                <!-- SE ELIMINÓ LA CELDA DE ACCIONES -->
             </tr>
         <?php endforeach; ?>
     </tbody>
@@ -216,7 +210,7 @@
             },
             "columnDefs": [
                 {
-                    "targets": [6], // Descripción (ahora índice 6 porque agregamos columna)
+                    "targets": [6], // Descripción (ahora índice 6 porque quitamos acciones)
                     "width": "250px",
                     "className": "celda-texto-largo dt-body-top",
                     "render": function(data, type, row) {

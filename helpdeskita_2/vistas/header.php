@@ -85,12 +85,17 @@ error_log("✅ Usuario válido: " . $_SESSION['usuario']['nombre']);
 
             <!-- Vistas del administrador -->
             <?php if ($_SESSION['usuario']['rol'] == 2) { ?>
-                
                 <li class="nav-item">
-                    <a class="nav-link" href="reportesP_Admin.php">Servicios Pendientes</a>
+                    <a class="nav-link" href="reportesP_Usuario.php">Servicios Pendientes</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="reportesT_Admin.php">Servicios Terminados</a>
+                    <a class="nav-link" href="reportesT_Usuario.php">Servicios Terminados</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="reportesP_Admin.php">Servicios en Espera</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="reportesT_Admin.php">Servicios Completado</a>
                 </li>
 
                 <li class="nav-item">
