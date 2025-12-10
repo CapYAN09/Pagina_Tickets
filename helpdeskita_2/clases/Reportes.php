@@ -1,11 +1,34 @@
 <?php
- 
+  
     include "conexion.php";
 
     class Reportes extends conexion
     {
+        // Función para obtener los datos del usuario por ID
+        private function obtenerDatosUsuarioCompleto($id_usuario)
+        {
+            $conexion = Conexion::conectar();
+            
+            $sql = "SELECT 
+                        u.usuario,
+                        u.ubicacion,
+                        p.nombre,
+                        p.paterno,
+                        p.materno
+                    FROM t_usuarios u
+                    INNER JOIN t_persona p ON u.id_persona = p.id_persona
+                    WHERE u.id_usuario = '".mysqli_real_escape_string($conexion, $id_usuario)."'";
+            
+            $respuesta = mysqli_query($conexion, $sql);
+            
+            if($respuesta && mysqli_num_rows($respuesta) > 0) {
+                return mysqli_fetch_assoc($respuesta);
+            }
+            
+            return null;
+        }
 
-        //Funcion para agregar los datos de un reporte a la base de datos
+        // Funcion para agregar los datos de un reporte a la base de datos
         public function crearReporte($datos)
         {
             $servidor = "172.30.247.185";
@@ -17,29 +40,47 @@
             $con = mysqli_connect($servidor, $usuario, $password, $db);
             $con->set_charset("utf8");
 
+            // Obtener datos del usuario automáticamente
+            $datosUsuario = $this->obtenerDatosUsuarioCompleto($datos['id_usuario']);
+            
+            if(!$datosUsuario) {
+                return "Error: No se encontraron datos del usuario";
+            }
+            
+            // Construir nombre completo
+            $nombre_completo = $datosUsuario['nombre'] . ' ' . $datosUsuario['paterno'];
+            if(!empty($datosUsuario['materno'])) {
+                $nombre_completo .= ' ' . $datosUsuario['materno'];
+            }
+            
+            // Usar ubicación como área solicitante
+            $area_solicitante = $datosUsuario['ubicacion'] ? $datosUsuario['ubicacion'] : 'Sin área asignada';
+            
             // Escapar todos los valores para evitar SQL injection
             $folio = mysqli_real_escape_string($con, $datos['folio']);
             $id_usuario = mysqli_real_escape_string($con, $datos['id_usuario']);
-            $area_solicitante = mysqli_real_escape_string($con, $datos['area_solicitante']);
             $id_depa = mysqli_real_escape_string($con, $datos['id_depa']);
-            $nombre_solicitante = mysqli_real_escape_string($con, $datos['nombre_solicitante']);
             $fecha_elaboracion = mysqli_real_escape_string($con, $datos['fecha_elaboracion']);
             $descripcion = mysqli_real_escape_string($con, $datos['descripcion']);
             $edificio = mysqli_real_escape_string($con, $datos['edificio']);
             $cubi = mysqli_real_escape_string($con, $datos['cubi']);
             
+            // Usar los valores obtenidos automáticamente
+            $nombre_solicitante = mysqli_real_escape_string($con, $nombre_completo);
+            $area_solicitante = mysqli_real_escape_string($con, $area_solicitante);
+            
             $sql = "INSERT INTO t_reportes(folio, id_usuario, area_solicitante, id_depa, nombre_solicitante, fecha_elaboracion, descripcion, edificio, cubi)
-        VALUES (
-            '".$datos['folio']."',
-            '".$datos['id_usuario']."',
-            '".$datos['area_solicitante']."',
-            '".$datos['id_depa']."',
-            '".$datos['nombre_solicitante']."',
-            '".$datos['fecha_elaboracion']."',
-            '".$datos['descripcion']."',
-            '".$datos['edificio']."',
-            '".$datos['cubi']."'
-        )";
+                    VALUES (
+                        '$folio',
+                        '$id_usuario',
+                        '$area_solicitante',
+                        '$id_depa',
+                        '$nombre_solicitante',
+                        '$fecha_elaboracion',
+                        '$descripcion',
+                        '$edificio',
+                        '$cubi'
+                    )";
 
             $result = mysqli_query($con, $sql);
 
@@ -99,40 +140,28 @@
             }
         }
 
-
-
-
-        //Funcion para proporcionar el ID del usuario que inció sesión
+        // Funcion para proporcionar el ID del usuario que inció sesión
         public function obteneridUsuario($idUsuario)
         {
             $conexion = Conexion::conectar();
             $sql = "SELECT
                         usuarios.id_usuario AS idUsuario
                     FROM  t_usuarios AS usuarios
-                         /*INNER JOIN
-                        t_reportes AS reportes ON usuarios.id_usuario = reportes.id_usuario*/
                     WHERE usuarios.id_usuario = '$idUsuario'";
             $respuesta = mysqli_query($conexion, $sql);
             $idusuario = mysqli_fetch_array($respuesta)['idUsuario'];
             return $idusuario;
         }
 
-
-        
-
-
-
-        //funcion para extraer y usar el id de usuario en la funcion obteneridUsuario
+        // Funcion para extraer y usar el id de usuario en la funcion obteneridUsuario
         public function obtenerDatosUsuario($idUsuario)
         {
             $conexion = Conexion::conectar();
             $sql = "SELECT DISTINCT
-                            usuarios.id_usuario AS idUsuario
+                        usuarios.id_usuario AS idUsuario
                     FROM
-                            t_usuarios AS usuarios
-                        /*INNER JOIN
-                            t_reportes AS reportes ON usuarios.id_usuario = reportes.id_usuario*/
-                        WHERE usuarios.id_usuario = '$idUsuario'";
+                        t_usuarios AS usuarios
+                    WHERE usuarios.id_usuario = '$idUsuario'";
 
             $respuesta = mysqli_query($conexion, $sql);
             $usuario = mysqli_fetch_array($respuesta);
@@ -143,32 +172,28 @@
             return $datos;
         }
 
-public function FirmarReporte($datos)
-{
-    $conexion = Conexion::conectar();
-    
-    // Obtener la fecha actual de la computadora en formato YYYY-MM-DD
-    $fecha_actual = date('Y-m-d');
-    
-    $sql = "UPDATE t_reportes_finalizados
-            SET firma_verificacion = 2,
-                fecha_verificado = '".mysqli_real_escape_string($conexion, $fecha_actual)."'
-            WHERE id_reporte = '".$datos['idReporte']."' ";
-    
-    $resultado = mysqli_query($conexion, $sql);
-    
-    if($resultado)
-    {
-        return 1;
+        public function FirmarReporte($datos)
+        {
+            $conexion = Conexion::conectar();
+            
+            // Obtener la fecha actual de la computadora en formato YYYY-MM-DD
+            $fecha_actual = date('Y-m-d');
+            
+            $sql = "UPDATE t_reportes_finalizados
+                    SET firma_verificacion = 2,
+                        fecha_verificado = '".mysqli_real_escape_string($conexion, $fecha_actual)."'
+                    WHERE id_reporte = '".$datos['idReporte']."' ";
+            
+            $resultado = mysqli_query($conexion, $sql);
+            
+            if($resultado)
+            {
+                return 1;
+            }
+            else{
+                return 0;
+            }
+        }
     }
-    else{
-        return 0;
-    }
-}
-        
-
-
-    }
-
 
 ?>

@@ -1,9 +1,7 @@
-<?php
+<?php 
      
     $datos= array(
        "id_usuario" => $_POST['idUsuario'],
-       "area_solicitante" => $_POST['areaSolicitante'],
-       "nombre_solicitante" => $_POST['nombreSolicitante'],
        "id_depa" => $_POST['departamento'],
        "fecha_elaboracion" => $_POST['fechaElaboracion'],
        "descripcion" => $_POST['descripcion'],
