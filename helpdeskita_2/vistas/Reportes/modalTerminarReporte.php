@@ -35,6 +35,7 @@
                     <option value="">Seleccionar tipo</option>
                     <option value="Preventivo">Preventivo</option>
                     <option value="Correctivo">Correctivo</option>
+                    <option value="Apoyo de area">Apoyo de area</option>
                 </select>
             </div>
             <!-- ELIMINADO: Campo asignado manual -->

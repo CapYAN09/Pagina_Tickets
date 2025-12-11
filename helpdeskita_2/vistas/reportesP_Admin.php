@@ -13,7 +13,7 @@
 <div class="container">
   <div class="card border-0 shadow my-5">
     <div class="card-body p-5">
-      <h1 class="fw-light">Servicios Pendientes</h1>
+      <h1 class="fw-light">Servicios en Espera</h1>
       <p class="lead">
       
         <!--<button class="btn btn-primary" data-toggle="modal" data-target="#modalterminarReporte">

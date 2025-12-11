@@ -12,7 +12,7 @@
 <div class="container">
   <div class="card border-0 shadow my-5">
     <div class="card-body p-5">
-      <h1 class="fw-light">Servicios Terminados</h1>
+      <h1 class="fw-light">Servicios Compeltados</h1>
       <p class="lead">
       
         
