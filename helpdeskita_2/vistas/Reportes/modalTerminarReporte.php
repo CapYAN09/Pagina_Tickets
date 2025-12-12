@@ -177,10 +177,30 @@
             Swal.close();
 
             if(data == 1 || data === true) {
-                Swal.fire("Operación realizada", "¡Reporte terminado!", "success");
-                $('#cargartablareportes').load("Reportes/tablareportesP_Admin.php");
-                document.getElementById("button_cerrar").click();
-                form.reset();
+                // Mostrar SweetAlert con confirmación
+                Swal.fire({
+                    title: "Operación realizada",
+                    text: "¡Reporte terminado!",
+                    icon: "success",
+                    confirmButtonText: "OK"
+                }).then((result) => {
+                    // Cuando el usuario haga clic en OK
+                    if (result.isConfirmed) {
+                        // Actualizar la tabla
+                        $('#cargartablareportes').load("Reportes/tablareportesP_Admin.php");
+                        
+                        // Cerrar el modal
+                        document.getElementById("button_cerrar").click();
+                        
+                        // Esperar un poco y recargar la página
+                        setTimeout(function() {
+                            location.reload();
+                        }, 300);
+                        
+                        // Limpiar el formulario
+                        form.reset();
+                    }
+                });
             } else {
                 Swal.fire("Operación no realizada", "Error al terminar el reporte", "error");
             }
